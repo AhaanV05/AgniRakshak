@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AgniRakshak</title>
+
+  <!-- Fonts & Leaflet -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header" id="siteHeader">
+    <div class="container header-inner">
+      <div class="brand">AgniRakshak</div>
+      <nav class="nav">
+        <a href="#home">Home</a>
+        <a href="#map">Map</a>
+        <a href="#why">Why</a>
+        <a href="#architecture">Architecture</a>
+        <a href="#impact">Impact</a>
+        <a href="#performance">Performance</a><!-- NEW -->
+        <a href="#strategy">Strategy</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="page" class="snap-y">
+
+    <!-- HERO -->
+    <section id="home" class="section hero">
+      <div class="container hero-inner">
+        <h1 class="hero-title">SAVING THE WORLD, ONE FIRE AT A TIME</h1>
+        <p class="hero-sub">
+          AgniRakshak provides a comprehensive suite of tools for proactive wildfire management. By harnessing real-time satellite imagery and advanced AI, our platform helps predict potential fire outbreaks, accurately assess ongoing threats and potential damage, and guide authorities in deploying effective preventive action. We empower communities and first responders with the critical information needed to protect lives and property.
+        </p>
+        <a class="btn btn-primary" href="#map">View The Map</a>
+      </div>
+    </section>
+
+    <!-- SEPARATOR -->
+    <div class="section-separator" aria-hidden="true"></div>
+
+    <!-- MAP -->
+    <section id="map" class="section map-section">
+      <div class="container map-wrap">
+        <div id="leafletMap" class="leaflet-wrap" aria-label="interactive map"></div>
+
+        <!-- Prediction info box (appears on the right of the map) -->
+        <div id="predictBox" class="predict-box" aria-hidden="true">
+          <button id="predictClose" class="predict-close" aria-label="Close prediction">×</button>
+          <div id="predictContent" class="predict-content">
+            <div class="predict-head">
+              <h4>Wildfire Prediction</h4>
+              <div id="riskBadge" class="risk-badge">—</div>
+            </div>
+
+            <div id="predictLoading" class="predict-loading">Waiting for request...</div>
+
+            <div id="predictFields" class="predict-fields" aria-live="polite">
+              <!-- Filled dynamically -->
+            </div>
+
+            <button id="analyzeThreat" class="btn btn-primary analyze-threat-btn" style="display: none; margin-top: 12px;">
+              Analyze Threat
+            </button>
+
+            <pre id="predictJson" class="predict-json" aria-hidden="true"></pre>
+          </div>
+        </div>
+
+        <!-- Threat Analysis info box (appears below the prediction box) -->
+        <div id="threatBox" class="threat-box" aria-hidden="true">
+          <button id="threatClose" class="threat-close" aria-label="Close threat analysis">×</button>
+          <div id="threatContent" class="threat-content">
+            <div class="threat-head">
+              <h4>Comprehensive Threat Analysis</h4>
+              <div id="threatBadge" class="threat-badge">—</div>
+            </div>
+
+            <div id="threatLoading" class="threat-loading">Waiting for analysis...</div>
+
+            <div id="threatFields" class="threat-fields" aria-live="polite">
+              <!-- Filled dynamically -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Blur Overlay (click to activate) -->
+        <div class="map-activate" id="mapActivate">
+          <div class="map-activate-card">
+            <div class="overlay-icon" aria-hidden="true">
+              <!-- pin icon -->
+              <svg class="icon-32" viewBox="0 0 24 24" fill="none">
+                <path d="M12 22s7-6.3 7-12a7 7 0 1 0-14 0c0 5.7 7 12 7 12Z" stroke="currentColor" stroke-width="2"/>
+                <circle cx="12" cy="10" r="2.5" stroke="currentColor" stroke-width="2"/>
+              </svg>
+            </div>
+            <h3>Activate Map</h3>
+            <p>Click here to enable map controls and zoom.</p>
+          </div>
+        </div>
+
+        <!-- Bottom action bar -->
+        <div class="map-actions" id="mapActions">
+          <div class="coords" id="coordPill">Lat: 23.48340, Lng: 77.34375</div>
+          <button class="btn btn-primary" id="checkProb">Check Probability</button>
+          <button class="btn btn-ghost" id="deactivateMap">Deactivate Map</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEPARATOR -->
+    <div class="section-separator" aria-hidden="true"></div>
+
+    <!-- WHY -->
+    <section id="why" class="section">
+      <div class="container">
+        <h2 class="section-title">Why <span class="accent">AgniRakshak?</span></h2>
+
+        <div class="grid grid-3">
+          <div class="card">
+            <div class="card-icon" aria-hidden="true">
+              <!-- radar / data -->
+              <svg viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/>
+                <path d="M12 12 18 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+              </svg>
+            </div>
+            <h3 class="card-title">Real-Time Data</h3>
+            <p>Utilizes live satellite data from NASA FIRMS to detect early signs of wildfires across the globe.</p>
+          </div>
+
+          <div class="card">
+            <div class="card-icon" aria-hidden="true">
+              <!-- chip -->
+              <svg viewBox="0 0 24 24" fill="none">
+                <rect x="7" y="7" width="10" height="10" rx="2" stroke="currentColor" stroke-width="2"/>
+                <path d="M4 10h2M4 14h2M18 10h2M18 14h2M10 4v2M14 4v2M10 18v2M14 18v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <h3 class="card-title">AI Predictions</h3>
+            <p>Analyzes conditions to predict fire spread, ensuring faster response and accurate threat assessment.</p>
+          </div>
+
+          <div class="card">
+            <div class="card-icon" aria-hidden="true">
+              <!-- shield -->
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6l7-3Z" stroke="currentColor" stroke-width="2"/>
+              </svg>
+            </div>
+            <h3 class="card-title">Community Safety</h3>
+            <p>Helps governments, NGOs, and citizens understand risk, reduce damage, and take preventive action.</p>
+          </div>
+
+          <div class="card">
+            <div class="card-icon" aria-hidden="true">
+              <!-- bell -->
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M18 16v-5a6 6 0 1 0-12 0v5l-2 2h16l-2-2Z" stroke="currentColor" stroke-width="2"/>
+                <path d="M10 20a2 2 0 0 0 4 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <h3 class="card-title">Automated Alerts</h3>
+            <p>Sends instant SMS, email, and app notifications in threatened areas to ensure timely evacuations.</p>
+          </div>
+
+          <div class="card">
+            <div class="card-icon" aria-hidden="true">
+              <!-- chart -->
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M4 20V6M8 20v-6M12 20V8M16 20v-9M20 20V4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <h3 class="card-title">Historical Analysis</h3>
+            <p>Analyzes years of satellite and weather data to identify high-risk zones and seasonal patterns.</p>
+          </div>
+
+          <div class="card">
+            <div class="card-icon" aria-hidden="true">
+              <!-- compass -->
+              <svg viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/>
+                <path d="M14.5 9.5 11 13l-1.5 3.5L13 15l3.5-3.5-2-2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <h3 class="card-title">Evacuation Planning</h3>
+            <p>Generates dynamic, safe evacuation routes in real time based on spread predictions and roads.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEPARATOR -->
+    <div class="section-separator" aria-hidden="true"></div>
+
+    <!-- ARCHITECTURE -->
+    <section id="architecture" class="section">
+      <div class="container">
+        <h2 class="section-title">Our <span class="accent">Architecture</span></h2>
+
+        <p class="section-sub">
+          A look inside our intelligent system that processes geospatial data to deliver actionable insights.
+        </p>
+
+        <div class="arch">
+          <div class="arch-media">
+            <img src="https://i.postimg.cc/LXWkvRTF/temp-Imageq-Xxp-Fd.avif" alt="AgniRakshak architecture diagram">
+          </div>
+
+          <div class="arch-text">
+            <div class="arch-step">
+              <h4>1. Occurrence Prediction (O_PRED)</h4>
+              <p>When a user selects coordinates, our model analyzes historical fire data, weather patterns, and vegetation density to calculate the initial probability at that location.</p>
+            </div>
+
+            <div class="arch-step">
+              <h4>2. Threat Prediction (T_PRED)</h4>
+              <p>Simultaneously, a second model assesses potential damage using proximity to infrastructure, water bodies, and forest coverage to determine overall risk level.</p>
+            </div>
+
+            <div class="arch-step">
+              <h4>3. Output &amp; Visualization</h4>
+              <p>Both outputs are synthesized into a comprehensive risk &amp; damage analysis and visualized on the map for fast, informed decisions.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEPARATOR -->
+    <div class="section-separator" aria-hidden="true"></div>
+
+    <!-- IMPACT -->
+    <section id="impact" class="section">
+      <div class="container">
+        <h2 class="section-title">Creating a Safer <span class="accent">Future</span></h2>
+
+        <div class="grid grid-3">
+          <div class="card">
+            <div class="card-icon" aria-hidden="true">
+              <!-- users -->
+              <svg viewBox="0 0 24 24" fill="none">
+                <circle cx="9" cy="9" r="3" stroke="currentColor" stroke-width="2"/>
+                <path d="M2 20c0-3.3 3.6-6 7-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="17" cy="11" r="2.5" stroke="currentColor" stroke-width="2"/>
+                <path d="M14 20c1.2-2.6 4.2-4 7-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <h3 class="card-title">For Communities</h3>
+            <p>Timely alerts and evacuation plans help reduce property damage by up to 40% and save lives.</p>
+          </div>
+
+          <div class="card">
+            <div class="card-icon" aria-hidden="true">
+              <!-- truck -->
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M3 7h11v7H3V7Z" stroke="currentColor" stroke-width="2"/>
+                <path d="M14 10h4l3 3v1h-7v-4Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                <circle cx="7" cy="18" r="2" stroke="currentColor" stroke-width="2"/>
+                <circle cx="18" cy="18" r="2" stroke="currentColor" stroke-width="2"/>
+              </svg>
+            </div>
+            <h3 class="card-title">For First Responders</h3>
+            <p>Real-time intelligence improves containment efficiency by ~25% and protects teams at the front lines.</p>
+          </div>
+
+          <div class="card">
+            <div class="card-icon" aria-hidden="true">
+              <!-- government building -->
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M4 20h16M6 20V10h12v10M3 10h18M10 4h4l6 6H4l6-6Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <h3 class="card-title">For Governance</h3>
+            <p>Data-driven insights power long-term planning, biodiversity protection, and resilient communities.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEPARATOR -->
+    <div class="section-separator" aria-hidden="true"></div>
+
+    <!-- PERFORMANCE (NEW) -->
+    <section id="performance" class="section performance">
+      <div class="container">
+        <h2 class="section-title">Model <span class="accent">Performance</span></h2>
+        <p class="section-sub">
+          A transparent look at the accuracy and reliability of our prediction models. We believe in data-driven
+          results for forecasting both fire occurrence and its potential rate of spread.
+        </p>
+
+        <!-- Tabs -->
+        <div class="perf-tabs">
+          <button id="btnFire" class="btn btn-primary perf-tab active">Fire Spread Prediction</button>
+          <button id="btnOcc" class="btn btn-ghost perf-tab">Wildfire Occurrence Prediction</button>
+        </div>
+
+        <!-- Pane: Fire Spread Prediction -->
+        <div id="paneFire" class="perf-pane show">
+          <!-- SWAPPED: Comprehensive comes first as large card -->
+          <div class="perf-card">
+            <h3 class="perf-card-title">Comprehensive Rate of Spread (ROS) Model Validation</h3>
+            <div class="img-wrap">
+              <img class="zoomable" src="https://i.postimg.cc/9Myzk1LB/Whats-App-Image-2025-10-04-at-17-53-55.jpg" alt="ROS model validation"/>
+            </div>
+            <p class="perf-caption">
+              Diagnostics including residuals and distribution checks confirm statistical soundness and predictive capabilities.
+            </p>
+          </div>
+
+          <!-- Then grid with Real vs Synthetic (left) and ROS Feature Importance (right) -->
+          <div class="perf-grid-2">
+            <div class="perf-card">
+              <h3 class="perf-card-title">Real vs. Synthetic Data Performance</h3>
+              <div class="img-wrap">
+                <img class="zoomable" src="https://i.postimg.cc/4dpn0wW9/Whats-App-Image-2025-10-04-at-17-48-26.jpg" alt="Real vs Synthetic performance"/>
+              </div>
+              <p class="perf-caption">
+                Comparison of validation on real-world data (left) vs training on synthetic data (right). The diagonal indicates ideal predictions.
+              </p>
+            </div>
+
+            <div class="perf-card">
+              <h3 class="perf-card-title">ROS Prediction: Feature Importance</h3>
+              <div class="img-wrap">
+                <img class="zoomable" src="https://i.postimg.cc/fLYkP585/Whats-App-Image-2025-10-04-at-17-54-49.jpg" alt="ROS feature importance"/>
+              </div>
+              <p class="perf-caption">
+                Wind speed, NDVI, and temperature emerge as leading drivers of spread predictions.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pane: Wildfire Occurrence Prediction -->
+        <div id="paneOcc" class="perf-pane">
+          <div class="perf-grid-2">
+            <div class="perf-card">
+              <h3 class="perf-card-title">Occurrence Prediction: Confusion Matrix</h3>
+              <div class="img-wrap">
+                <img class="zoomable" src="https://i.postimg.cc/KvFStbC8/Whats-App-Image-2025-10-02-at-22-06-29.jpg" alt="Occurrence confusion matrix"/>
+              </div>
+              <p class="perf-caption">
+                Confusion matrix and report summarizing precision, recall, F1-score and overall accuracy across fire/non-fire classes.
+              </p>
+            </div>
+
+            <div class="perf-card">
+              <h3 class="perf-card-title">Occurrence Prediction: Feature Importance</h3>
+              <div class="img-wrap">
+                <img class="zoomable" src="https://i.postimg.cc/4NZkpGjn/Whats-App-Image-2025-10-03-at-01-17-52.jpg" alt="Occurrence feature importance and diagnostics"/>
+              </div>
+              <p class="perf-caption">
+                Key contributors include temperature, relative humidity, and vegetation indices (NDVI), aligning with environmental factors.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEPARATOR -->
+    <div class="section-separator" aria-hidden="true"></div>
+
+    <!-- STRATEGY / BUSINESS MODEL (NEW) -->
+    <section id="strategy" class="section strategy">
+      <div class="container">
+        <h2 class="section-title">Our Business <span class="accent">Model</span></h2>
+        <p class="section-sub">
+          Our strategy is centered on a multi-faceted approach to create a sustainable and impactful business. We aim to collaborate with partners while building diverse revenue streams to fuel our growth and innovation.
+        </p>
+
+        <div class="grid grid-3">
+          <div class="card">
+            <h3 class="card-title">Subscription Models</h3>
+            <p>Offering tiered subscription plans for governments, NGOs, and large enterprises, providing access to advanced analytics, priority support, and higher data resolution.</p>
+          </div>
+          <div class="card">
+            <h3 class="card-title">Premium Features</h3>
+            <p>Implementing a paywall for specialized tools, such as high-frequency satellite monitoring, long-term predictive modeling, and detailed damage assessment reports.</p>
+          </div>
+          <div class="card">
+            <h3 class="card-title">Data &amp; API Services</h3>
+            <p>Monetizing our aggregated and processed data by providing secure API endpoints for third-party developers, researchers, and insurance companies.</p>
+          </div>
+          <div class="card">
+            <h3 class="card-title">Government Sponsorships</h3>
+            <p>Securing contracts and sponsorships from government agencies to integrate our platform as an official tool for national disaster management and public safety.</p>
+          </div>
+          <div class="card">
+            <h3 class="card-title">NGO &amp; Corporate Partnerships</h3>
+            <p>Collaborating with NGOs and corporations on specific projects, providing them with data-driven insights for environmental conservation and CSR initiatives.</p>
+          </div>
+          <div class="card">
+            <h3 class="card-title">Targeted Advertising</h3>
+            <p>Running non-intrusive, relevant advertisements for products and services related to safety, insurance, and environmental sustainability on our public-facing platforms.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEPARATOR -->
+    <div class="section-separator" aria-hidden="true"></div>
+
+    <!-- FUTURE ROADMAP (NEW) -->
+    <section id="roadmap" class="section roadmap">
+      <div class="container">
+        <h2 class="section-title">Our Future <span class="accent">Roadmap</span></h2>
+        <p class="section-sub">
+          Innovation is at our core. Our roadmap outlines a phased approach to creating a fully autonomous wildfire detection and response system.
+        </p>
+
+        <div class="road-grid">
+          <!-- Phase 1 -->
+          <div class="road-col">
+            <h3 class="road-phase orange">Phase 1 (Current)</h3>
+            <h4 class="road-sub">Predictive Intelligence</h4>
+            <p class="road-text">Leveraging historical and real-time data to accurately predict wildfire occurrence and spread, providing the foundational insights for proactive measures.</p>
+          </div>
+
+          <!-- Divider with central icon -->
+          <div class="road-divider">
+            <div class="circle-icon">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 2v20M2 12h20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Phase 2 -->
+          <div class="road-col">
+            <h3 class="road-phase orange">Phase 2 (Future)</h3>
+            <h4 class="road-sub">Autonomous Verification &amp; Response</h4>
+            <p class="road-text">A groundbreaking step towards automation:</p>
+            <ul class="road-list">
+              <li><span>Drone Deployment:</span> Upon high-probability prediction, automated drones are dispatched.</li>
+              <li><span>Visual Confirmation:</span> Drones stream live imagery to our cloud platform.</li>
+              <li><span>AI Analysis:</span> A CNN/YOLO model analyzes the feed to confirm fire presence and severity.</li>
+              <li><span>Automated Response:</span> The system notifies authorities with precise data, recommending an appropriate response.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEPARATOR -->
+    <div class="section-separator" aria-hidden="true"></div>
+
+    <!-- RESEARCH -->
+    <section id="research" class="section research">
+      <div class="container">
+        <h2 class="section-title">Grounded in <span class="accent">Research</span></h2>
+        <p class="section-sub">
+          Our methodologies are built upon established academic research in the field of wildfire prediction using machine learning.
+          The primary research paper we referred to is:
+        </p>
+
+        <div class="research-card">
+          <div class="research-text">
+            <h3 class="paper-title">
+              Predicting Forest Fire Occurrence Using Machine Learning Algorithms in the Mediterranean Region of Türkiye
+            </h3>
+            <p class="paper-authors">
+              Eker, İ., Triyaki, İ., &amp; Avdan, U. (2024).
+            </p>
+            <p class="paper-journal">Published in <em>Forestist</em>.</p>
+          </div>
+
+          <a
+            class="btn btn-primary btn-paper"
+            href="https://forestist.org/Content/files/sayilar/260/FRSTST_20240022_nlm_new_indd(1).pdf"
+            target="_blank" rel="noopener"
+            aria-label="Read the referenced research paper in a new tab"
+          >
+            Read The Paper
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEPARATOR -->
+    <div class="section-separator" aria-hidden="true"></div>
+
+    <!-- CONTACT -->
+    <section id="contact" class="section contact">
+      <div class="container contact-grid">
+        <div class="contact-heading">
+          <h2><span class="accent block">CONTACT</span><span class="accent block">US</span></h2>
+        </div>
+
+        <form class="contact-card" onsubmit="event.preventDefault()">
+          <div class="input-row">
+            <input type="text" placeholder="First Name" required>
+            <input type="text" placeholder="Last Name" required>
+          </div>
+          <div class="input-row">
+            <input type="text" placeholder="City">
+            <input type="email" placeholder="Email" required>
+          </div>
+          <textarea rows="6" placeholder="Your Message"></textarea>
+          <button class="btn btn-primary" type="submit">Send Message</button>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      Team Local Host — Soumyajit Chatterjee | Ahaan Verma | Taanish Chouhan
+    </div>
+  </footer>
+
+  <!-- Image modal (NEW) -->
+  <div id="imgModal" class="img-modal" aria-hidden="true">
+    <button id="imgModalClose" class="img-modal-close" aria-label="Close image">×</button>
+    <img id="imgModalSrc" alt="Preview"/>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
