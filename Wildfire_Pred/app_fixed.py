@@ -19,12 +19,6 @@ AERIS_CLIENT_ID = os.getenv('AERIS_CLIENT_ID')
 AERIS_CLIENT_SECRET = os.getenv('AERIS_CLIENT_SECRET')
 MODEL_PATH = os.getenv('WILDFIRE_MODEL_PATH', 'wildfire_xgboost_model.json')
 
-# If environment variables are missing, use placeholders from simple_predict (not recommended for production)
-if not AERIS_CLIENT_ID:
-    AERIS_CLIENT_ID = 'vys7jtGpEpR9Z5jRWxNxt'
-if not AERIS_CLIENT_SECRET:
-    AERIS_CLIENT_SECRET = 'vqY2xMbLvuIQZCAefvQ8jBUQcxWaQFiT1ZGNhM51'
-
 predictor = WildfirePredictor(AERIS_CLIENT_ID, AERIS_CLIENT_SECRET, MODEL_PATH)
 
 def convert_numpy_types(obj):
